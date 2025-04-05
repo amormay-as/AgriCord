@@ -23,9 +23,9 @@ function onClick() {
       </v-app-bar>
 
       <v-main>
-        <v-container>
-          <v-row>
-            <v-col cols="12" md="6">
+        <v-container class="d-flex justify-center align-center" style="min-height: 80vh">
+          <v-row justify="center">
+            <v-col cols="12" md="6" lg="4">
               <v-card class="mx-auto" prepend-icon="$vuetify" subtitle="Record Monitoring">
                 <template v-slot:title>
                   <span class="font-weight-black">Welcome to AgriCord</span>
@@ -50,3 +50,4 @@ function onClick() {
     </v-app>
   </v-responsive>
 </template>
+
