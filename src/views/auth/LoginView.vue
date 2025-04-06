@@ -22,36 +22,37 @@ function onClick() {
         ></v-btn>
       </v-app-bar>
       <v-main>
-  <v-container class="d-flex justify-center align-center" style="min-height: 80vh;">
-    <v-row justify="center">
-      <v-col cols="12" md="6" lg="4">
-        <v-card class="custom-card mx-auto px-4 py-5 text-center">
-          <!-- Centered Title -->
-          <h2 class="login-title">
-            <span class="font-weight-black text-light-green">AgriCord</span>
-          </h2>
+        <v-container class="d-flex justify-center align-center" style="min-height: 80vh">
+          <v-row justify="center">
+            <v-col cols="12" md="6" lg="4">
+              <v-card class="custom-card mx-auto px-4 py-5 text-center">
+                <!-- Centered Title -->
+                <h2 class="login-title">
+                  <span class="font-weight-black text-light-green">AgriCord</span>
+                </h2>
 
-          <!-- Small Image Below -->
-          <img src="@/assets/img/plant.png" alt="Plant Icon" class="logo" />
+                <!-- Small Image Below -->
+                <img src="@/assets/img/plant.png" alt="Plant Icon" class="logo" />
 
-          <!-- Login Form -->
-          <v-card-text class="bg-surface-light pt-4">
-            <v-form fast-fail @submit.prevent>
-              <v-text-field label="Email" outlined dense></v-text-field>
+                <!-- Login Form -->
+                <v-card-text class="bg-surface-light pt-4">
+                  <v-form fast-fail @submit.prevent>
+                    <v-text-field label="Email" outlined dense></v-text-field>
 
-              <v-text-field label="Password" type="password" outlined dense></v-text-field>
+                    <v-text-field label="Password" type="password" outlined dense></v-text-field>
 
-              <v-btn class="mt-2" type="submit" block>Login</v-btn>
-            </v-form>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
-</v-main>
+                    <v-btn class="mt-2" type="submit" block>Login</v-btn>
+                  </v-form>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-main>
 
-
-      <v-footer color="green" border app>AgriCord - 2025</v-footer>
+      <v-footer color="green" border app class="justify-center text-caption"
+        >AgriCord - 2025</v-footer
+      >
     </v-app>
   </v-responsive>
 </template>
@@ -59,7 +60,7 @@ function onClick() {
 <style>
 /* Full-page background fix */
 .background-image {
-  background: url("/src/assets/img/leaves.jpg") no-repeat center center !important;
+  background: url('/src/assets/img/leaves.jpg') no-repeat center center !important;
   background-size: cover !important;
   min-height: 100vh;
   display: flex;
@@ -69,7 +70,7 @@ function onClick() {
 
 /* Light Green Color for AgriCord Text */
 .text-light-green {
-  color: #90EE90 !important; /* Light green */
+  color: #90ee90 !important; /* Light green */
 }
 
 /* Small Image Below the Title */
