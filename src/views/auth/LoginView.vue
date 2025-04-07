@@ -21,7 +21,6 @@ function onClick() {
           @click="onClick"
         ></v-btn>
       </v-app-bar>
-
       <v-main>
         <v-container class="d-flex justify-center align-center" style="min-height: 80vh">
           <v-row justify="center">
