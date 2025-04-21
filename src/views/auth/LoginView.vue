@@ -1,26 +1,10 @@
 <script setup>
-import { ref } from 'vue'
-
-const theme = ref('light')
-
-function onClick() {
-  theme.value = theme.value === 'light' ? 'dark' : 'light'
-}
+import {} from 'vue'
 </script>
 
 <template>
   <v-responsive class="border rounded" max-height="1000">
     <v-app :theme="theme" class="background-image">
-      <v-app-bar class="px-3" color="green">
-        <v-spacer></v-spacer>
-
-        <v-btn
-          :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
-          text="Dark mode"
-          slim
-          @click="onClick"
-        ></v-btn>
-      </v-app-bar>
       <v-main>
         <v-container class="d-flex justify-center align-center" style="min-height: 80vh">
           <v-row justify="center">
@@ -52,9 +36,9 @@ function onClick() {
         </v-container>
       </v-main>
 
-      <v-footer color="green" border app class="justify-center text-caption"
-        >AgriCord - 2025</v-footer
-      >
+      <v-footer border app class="justify-center text-caption bg-transparent text-white">
+        AgriCord - 2025
+      </v-footer>
     </v-app>
   </v-responsive>
 </template>
