@@ -41,7 +41,9 @@ function onClick() {
 
                     <v-text-field label="Password" type="password" outlined dense></v-text-field>
 
-                    <v-btn class="mt-2" type="submit" block>Login</v-btn>
+                    <RouterLink to="/dashboard"
+                      ><v-btn class="mt-2" type="submit" block>Login</v-btn></RouterLink
+                    >
                   </v-form>
                 </v-card-text>
               </v-card>
