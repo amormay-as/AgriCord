@@ -1,5 +1,4 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
   <v-responsive class="border rounded" max-height="1000">
@@ -9,11 +8,7 @@
         <v-row class="d-flex align-center justify-start" no-gutters>
           <!-- Logo next to AgriCord -->
           <v-col class="pa-0" cols="auto">
-            <img
-              src="@/assets/img/plant.png"
-              alt="AgriCord Logo"
-              class="logo"
-            />
+            <img src="@/assets/img/plant.png" alt="AgriCord Logo" class="logo" />
           </v-col>
           <v-col class="pa-0">
             <v-toolbar-title>
@@ -26,7 +21,7 @@
       <!-- Centered Navigation Bar below the header -->
       <v-app-bar :elevation="2" flat color="white">
         <v-toolbar-items class="d-flex justify-center w-100">
-          <v-btn text class="nav-btn">Home</v-btn>
+          <v-btn text class="nav-btn"><RouterLink to="/home">Home</RouterLink></v-btn>
           <v-btn text class="nav-btn">Barangay</v-btn>
           <v-btn text class="nav-btn">Supplies</v-btn>
           <v-btn text class="nav-btn">Transactions</v-btn>
