@@ -28,6 +28,28 @@
         </v-toolbar-items>
       </v-app-bar>
 
+      <!-- Home Dashboard Section -->
+      <v-main>
+        <v-container class="pt-10">
+          <v-row justify="center" align="center" dense>
+            <v-col v-for="(item, i) in stats" :key="i" cols="12" sm="6" md="3" class="text-center">
+              <v-card class="pa-5 stat-card" elevation="2">
+                <div class="text-h5 font-weight-bold">{{ item.value }}</div>
+                <div class="text-subtitle-2">{{ item.label }}</div>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-card class="mt-8 pa-6" elevation="1">
+            <div class="text-h5 font-weight-bold mb-2">Welcome to AgriCord!</div>
+            <p>
+              🌟 AgriCord Tip of the Day:<br />
+              Always update your supply usage after fieldwork to keep your records accurate.
+            </p>
+          </v-card>
+        </v-container>
+      </v-main>
+
       <!-- Footer -->
       <v-footer color="green" border app class="justify-center text-caption">
         AgriCord - 2025
