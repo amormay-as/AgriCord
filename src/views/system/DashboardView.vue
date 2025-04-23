@@ -86,4 +86,9 @@
   display: block;
   margin: 10px auto;
 }
+
+.v-main {
+  padding-top: 140px;
+  background-color: beige;
+}
 </style>
