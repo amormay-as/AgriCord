@@ -23,12 +23,12 @@
         <v-toolbar-items class="d-flex justify-center w-100">
           <v-btn text class="nav-btn"><RouterLink to="/home">Home</RouterLink></v-btn>
           <v-btn text class="nav-btn">Barangay</v-btn>
-          <v-btn text class="nav-btn">Supplies</v-btn>
+          <v-btn text class="nav-btn"><RouterLink to="/supplies">Supplies</RouterLink></v-btn>
           <v-btn text class="nav-btn">Transactions</v-btn>
         </v-toolbar-items>
       </v-app-bar>
 
-      <!-- Home Dashboard Section -->
+      <!--Dashboard Section -->
       <v-main>
         <v-container class="pt-10">
           <v-row justify="center" align="center" dense>
