@@ -1,29 +1,3 @@
-<script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-// List of barangays and their corresponding farmer profiles
-const barangays = ref([
-  { name: 'AWA', showFarmers: false, farmer: { id: 'antonio-dela-crad', name: 'Antonio Dela Crad' } },
-  { name: 'AZPETIA', showFarmers: false, farmer: { id: 'maria', name: 'Maria Santos' } },
-  { name: 'PATIN-AY', showFarmers: false, farmer: { id: 'john', name: 'John Reyes' } },
-  { name: 'LUCENA', showFarmers: false, farmer: { id: 'etena', name: 'Etena Moreno' } },
-  { name: 'MAUG', showFarmers: false, farmer: { id: 'jose', name: 'Jose Tan' } },
-])
-
-// Toggle visibility of farmers in a barangay
-function toggleFarmers(index) {
-  barangays.value[index].showFarmers = !barangays.value[index].showFarmers
-}
-
-// Function to navigate to farmer profile (this is used in both the button and router-link)
-function goToFarmerProfile(id) {
-  router.push(`/profile/${id}`)
-}
-</script>
-
 <template>
   <v-responsive class="border rounded" max-height="1000">
     <v-app class="background-image">
@@ -54,26 +28,36 @@ function goToFarmerProfile(id) {
       <!-- Main Content -->
       <v-main>
         <v-container class="pt-10">
-          <v-row>
-            <v-col
-              v-for="(barangay, index) in barangays"
-              :key="index"
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-card class="pa-4" outlined @click="toggleFarmers(index)" style="cursor: pointer">
-                <v-card-title class="text-h6 font-weight-bold text-center">
-                  <!-- Make barangay name clickable to navigate to profile -->
-                  <router-link :to="`/profile/${barangay.farmer.id}`" class="text-decoration-none">
-                    {{ barangay.name }}
-                  </router-link>
+          <v-row class="d-flex justify-center">
+            <v-col cols="12" md="6">
+              <v-card class="pa-4">
+                <!-- Image inside the card -->
+                <v-img
+                  :src="farmerImage"
+                  height="200px"
+                  contain
+                ></v-img>
+                <v-card-title class="text-h5 font-weight-bold text-center">
+                  Antonio Dela Crad
                 </v-card-title>
-                <v-card-text v-if="barangay.showFarmers">
-                  <v-btn text color="primary" @click.stop="goToFarmerProfile(barangay.farmer.id)">
-                    {{ barangay.farmer.name }}
-                  </v-btn>
+                <v-card-subtitle class="text-center">Farmer</v-card-subtitle>
+                <v-divider></v-divider>
+                <v-card-text>
+                  <div class="text-center">
+                    <p><strong>Barangay:</strong> AWA</p>
+                    <p><strong>Experience:</strong> 5 years of farming</p>
+                    <p><strong>Specialty:</strong> Rice farming</p>
+                    <p><strong>Contact:</strong> 0917-xxxx-xxxx</p>
+                  </div>
                 </v-card-text>
+                <v-divider></v-divider>
+                <v-btn
+                  color="green"
+                  class="mx-auto d-block"
+                  @click="goBack"
+                >
+                  Back to Barangays
+                </v-btn>
               </v-card>
             </v-col>
           </v-row>
@@ -87,6 +71,23 @@ function goToFarmerProfile(id) {
     </v-app>
   </v-responsive>
 </template>
+
+<script setup>
+import { useRouter } from 'vue-router'
+import farmerImage from '@/assets/img/farmer1.png' // Make sure this matches the file exactly
+
+const router = useRouter()
+
+// Navigate back to Barangay page
+function goBack() {
+  router.push('/barangay')
+}
+
+// Optional: goTo method if used in nav bar
+function goTo(path) {
+  router.push(path)
+}
+</script>
 
 <style scoped>
 .gradient-app-bar {
