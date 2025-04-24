@@ -8,19 +8,23 @@ const router = useRouter()
 const barangays = ref([
   { name: 'AWA', showFarmers: false, farmer: { id: 'antonio-dela-crad', name: 'Antonio Dela Crad' } },
   { name: 'AZPETIA', showFarmers: false, farmer: { id: 'maria', name: 'Maria Santos' } },
-  { name: 'PATIN-AY', showFarmers: false, farmer: { id: 'john', name: 'John Reyes' } },
-  { name: 'LUCENA', showFarmers: false, farmer: { id: 'etena', name: 'Etena Moreno' } },
-  { name: 'MAUG', showFarmers: false, farmer: { id: 'jose', name: 'Jose Tan' } },
+  { name: 'PATIN-AY', showFarmers: false, farmer: { id: 'john-reyes', name: 'John Reyes' } },
+  { name: 'LUCENA', showFarmers: false, farmer: { id: 'etena-moreno', name: 'Etena Moreno' } },
+  { name: 'MAUG', showFarmers: false, farmer: { id: 'jose-tan', name: 'Jose Tan' } },
+
 ])
 
-// Toggle visibility of farmers in a barangay
+
 function toggleFarmers(index) {
   barangays.value[index].showFarmers = !barangays.value[index].showFarmers
 }
 
-// Function to navigate to farmer profile (this is used in both the button and router-link)
 function goToFarmerProfile(id) {
   router.push(`/profile/${id}`)
+}
+
+function goTo(path) {
+  router.push(path)
 }
 </script>
 
@@ -64,7 +68,6 @@ function goToFarmerProfile(id) {
             >
               <v-card class="pa-4" outlined @click="toggleFarmers(index)" style="cursor: pointer">
                 <v-card-title class="text-h6 font-weight-bold text-center">
-                  <!-- Make barangay name clickable to navigate to profile -->
                   <router-link :to="`/profile/${barangay.farmer.id}`" class="text-decoration-none">
                     {{ barangay.name }}
                   </router-link>

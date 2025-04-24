@@ -74,7 +74,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import farmerImage from '@/assets/img/farmer1.png' // Replace with Etena’s actual image if you have it
+import farmerImage from '@/assets/img/farmer2.png' // Replace with Etena’s actual image if you have it
 
 const router = useRouter()
 
