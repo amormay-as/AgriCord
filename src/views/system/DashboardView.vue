@@ -22,7 +22,7 @@
       <v-app-bar :elevation="2" flat color="white">
         <v-toolbar-items class="d-flex justify-center w-100">
           <v-btn text class="nav-btn"><RouterLink to="/home">Home</RouterLink></v-btn>
-          <v-btn text class="nav-btn">Barangay</v-btn>
+          <v-btn text class="nav-btn"><RouterLink to="/barangay">Barangay</RouterLink></v-btn>
           <v-btn text class="nav-btn"><RouterLink to="/supplies">Supplies</RouterLink></v-btn>
           <v-btn text class="nav-btn"
             ><RouterLink to="/transaction">Transactions</RouterLink></v-btn
