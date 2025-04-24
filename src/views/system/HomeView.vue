@@ -29,7 +29,9 @@ const stats = [
           <v-btn text class="nav-btn">Home</v-btn>
           <v-btn text class="nav-btn"><RouterLink to="/barangay">Barangay</RouterLink></v-btn>
           <v-btn text class="nav-btn"><RouterLink to="/supplies">Supplies</RouterLink></v-btn>
-          <v-btn text class="nav-btn">Transactions</v-btn>
+          <v-btn text class="nav-btn"
+            ><RouterLink to="/transaction">Transactions</RouterLink></v-btn
+          >
         </v-toolbar-items>
       </v-app-bar>
 

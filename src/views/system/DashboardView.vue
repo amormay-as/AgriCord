@@ -24,7 +24,9 @@
           <v-btn text class="nav-btn"><RouterLink to="/home">Home</RouterLink></v-btn>
           <v-btn text class="nav-btn">Barangay</v-btn>
           <v-btn text class="nav-btn"><RouterLink to="/supplies">Supplies</RouterLink></v-btn>
-          <v-btn text class="nav-btn">Transactions</v-btn>
+          <v-btn text class="nav-btn"
+            ><RouterLink to="/transaction">Transactions</RouterLink></v-btn
+          >
         </v-toolbar-items>
       </v-app-bar>
 
