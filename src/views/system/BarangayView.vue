@@ -6,14 +6,16 @@ const router = useRouter()
 
 // List of barangays and their corresponding farmer profiles
 const barangays = ref([
-  { name: 'AWA', showFarmers: false, farmer: { id: 'antonio-dela-crad', name: 'Antonio Dela Crad' } },
+  {
+    name: 'AWA',
+    showFarmers: false,
+    farmer: { id: 'antonio-dela-crad', name: 'Antonio Dela Crad' },
+  },
   { name: 'AZPETIA', showFarmers: false, farmer: { id: 'maria', name: 'Maria Santos' } },
   { name: 'PATIN-AY', showFarmers: false, farmer: { id: 'john-reyes', name: 'John Reyes' } },
   { name: 'LUCENA', showFarmers: false, farmer: { id: 'etena-moreno', name: 'Etena Moreno' } },
   { name: 'MAUG', showFarmers: false, farmer: { id: 'jose-tan', name: 'Jose Tan' } },
-
 ])
-
 
 function toggleFarmers(index) {
   barangays.value[index].showFarmers = !barangays.value[index].showFarmers
@@ -59,14 +61,8 @@ function goTo(path) {
       <v-main>
         <v-container class="pt-10">
           <v-row>
-            <v-col
-              v-for="(barangay, index) in barangays"
-              :key="index"
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-card class="pa-4" outlined @click="toggleFarmers(index)" style="cursor: pointer">
+            <v-col v-for="(barangay, index) in barangays" :key="index" cols="12" sm="6" md="4">
+              <v-card class="pa-12" outlined @click="toggleFarmers(index)" style="cursor: pointer">
                 <v-card-title class="text-h6 font-weight-bold text-center">
                   <router-link :to="`/profile/${barangay.farmer.id}`" class="text-decoration-none">
                     {{ barangay.name }}
@@ -84,9 +80,7 @@ function goTo(path) {
       </v-main>
 
       <!-- Footer -->
-      <v-footer color="green" border app class="justify-center text-caption">
-        AgriCord - 2025
-      </v-footer>
+      <v-footer color="green" border app class="justify-center text-caption"> </v-footer>
     </v-app>
   </v-responsive>
 </template>
