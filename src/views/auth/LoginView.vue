@@ -28,8 +28,8 @@ import {} from 'vue'
                   <v-form fast-fail @submit.prevent>
                     <v-text-field label="Email" outlined dense></v-text-field>
                     <v-text-field label="Password" type="password" outlined dense></v-text-field>
-                    <RouterLink to="/dashboard">
-                      <v-btn text class="mt-2" @click="goTo('/')">Login</v-btn>
+                    <RouterLink to="/home">
+                      <v-btn class="mt-2" type="submit" block>Login</v-btn>
                     </RouterLink>
                   </v-form>
                 </v-card-text>

@@ -43,42 +43,76 @@ const stats = [
 
       <!-- Home Section -->
       <v-main>
-        <v-container class="pt-10">
+        <v-container class="pt-2">
+          <br />
+          <div class="text-h4 font-weight-bold mb-2 dashboard-title">Dashboard</div>
+
           <v-row justify="center" align="center" dense>
-            <v-col v-for="(item, i) in stats" :key="i" cols="12" sm="6" md="3" class="text-center">
-              <v-card class="pa-5 stat-card" elevation="2">
+            <!-- welcome  -->
+            <v-col cols="12">
+              <v-card class="mt-3 pa-6" elevation="1">
+                <span class="font-weight-bold">Welcome to AgriCord!</span><br /><br />
+                <p>
+                  Track and manage your farm supplies, monitor usage, and keep your records
+                  organized all in one place.
+                </p>
+              </v-card>
+            </v-col>
+          </v-row>
+          <!-- overview -->
+          <v-row justify="center" align="center" dense>
+            <v-col
+              v-for="(item, i) in stats"
+              :key="i"
+              cols="12"
+              sm="6"
+              md="4"
+              class="text-center mt-2"
+            >
+              <!-- Card for Total Farmers -->
+              <v-card v-if="i === 0" class="pa-5 stat-card farmers-card" elevation="2">
+                <div class="text-h5 font-weight-bold">{{ item.value }}</div>
+                <div class="text-subtitle-2">{{ item.label }}</div>
+              </v-card>
+
+              <!-- Card for Total Supplies -->
+              <v-card v-else-if="i === 1" class="pa-5 stat-card supplies-card" elevation="2">
+                <div class="text-h5 font-weight-bold">{{ item.value }}</div>
+                <div class="text-subtitle-2">{{ item.label }}</div>
+              </v-card>
+
+              <!-- Card for Monthly Transactions -->
+              <v-card v-else class="pa-5 stat-card transactions-card" elevation="2">
                 <div class="text-h5 font-weight-bold">{{ item.value }}</div>
                 <div class="text-subtitle-2">{{ item.label }}</div>
               </v-card>
             </v-col>
           </v-row>
-
-          <v-card class="mt-8 pa-6" elevation="1">
-            <div class="text-h5 font-weight-bold mb-2">Dashboard</div>
-            <span>Welcome to AgriCord! 👋</span><br /><br />
-            <p>
-              Track and manage your farm supplies, monitor usage, and keep your records organized
-              all in one place.
-            </p>
-            <br />
-            <ul>
-              📦 Available Supplies: 10 types
-              <br />
-              🗓️ Last Log Entry: April 22, 2025
-            </ul>
-          </v-card>
         </v-container>
       </v-main>
 
       <!-- Footer -->
-      <v-footer color="green" border app class="justify-center text-caption">
-        AgriCord - 2025
-      </v-footer>
+      <v-container class="footer text-center p-2 text-white" fluid>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <div class="text-caption">© 2025 AgriCord. All rights reserved.</div>
+          </v-col>
+        </v-row>
+      </v-container>
+
+      <!-- Bottom Section (custom footer-style section) -->
     </v-app>
   </v-responsive>
 </template>
 
 <style scoped>
+.dashboard-title {
+  color: #2e7d32;
+}
+.footer {
+  background-color: #6e9a71;
+  width: 100%;
+}
 .gradient-app-bar {
   background: linear-gradient(to right, #6e9a71, #0b6d10);
   color: white;
@@ -107,6 +141,11 @@ const stats = [
 
 .stat-card {
   background-color: #f2f9f2;
+  border-radius: 12px;
+}
+
+.v-card {
+  background-color: #ffffff;
   border-radius: 12px;
 }
 
