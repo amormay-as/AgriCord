@@ -80,7 +80,9 @@ function goTo(path) {
       </v-main>
 
       <!-- Footer -->
-      <v-footer color="green" border app class="justify-center text-caption"> </v-footer>
+      <v-footer color="green" border app class="justify-center text-caption">
+        AgriCord - 2025
+      </v-footer>
     </v-app>
   </v-responsive>
 </template>
