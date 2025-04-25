@@ -6,7 +6,7 @@ import {} from 'vue'
   <v-responsive class="border rounded" max-height="1000">
     <v-app :theme="theme" class="background-image">
       <v-main>
-        <v-container class="d-flex justify-center align-center" style="min-height: 100vh;">
+        <v-container class="d-flex justify-center align-center" style="min-height: 100vh">
           <v-row justify="center" align="center">
             <v-col cols="12" md="6" lg="4">
               <v-card class="custom-card mx-auto px-4 py-5 text-center">
@@ -16,7 +16,12 @@ import {} from 'vue'
                 </h2>
 
                 <!-- Small Image Below -->
-                <img src="@/assets/img/plant.png" alt="Plant Icon" class="logo" style="width: 80px; height: 80px;" />
+                <img
+                  src="@/assets/img/plant.png"
+                  alt="Plant Icon"
+                  class="logo"
+                  style="width: 80px; height: 80px"
+                />
 
                 <!-- Login Form -->
                 <v-card-text class="bg-surface-light pt-4">
@@ -24,7 +29,7 @@ import {} from 'vue'
                     <v-text-field label="Email" outlined dense></v-text-field>
                     <v-text-field label="Password" type="password" outlined dense></v-text-field>
                     <RouterLink to="/dashboard">
-                      <v-btn class="mt-2" type="submit" block>Login</v-btn>
+                      <v-btn text class="mt-2" @click="goTo('/')">Login</v-btn>
                     </RouterLink>
                   </v-form>
                 </v-card-text>
@@ -48,9 +53,9 @@ export default {
       theme: {
         // define your theme settings here
       },
-    };
+    }
   },
-};
+}
 </script>
 
 <style scoped>
