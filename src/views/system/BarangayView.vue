@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-// List of barangays and their corresponding farmer profiles
 const barangays = ref([
   {
     name: 'AWA',
@@ -47,7 +46,7 @@ function goTo(path) {
         </v-row>
       </v-app-bar>
 
-      <!-- Navigation -->
+      <!-- Navigation Bar -->
       <v-app-bar :elevation="2" flat color="white">
         <v-toolbar-items class="d-flex justify-center w-100">
           <v-btn text class="nav-btn" @click="goTo('/home')">Home</v-btn>

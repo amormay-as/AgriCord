@@ -1,4 +1,18 @@
-<script setup></script>
+<script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const goTo = (path) => {
+  router.push(path)
+}
+
+const stats = [
+  { label: 'Total Farmers', value: 1125 },
+  { label: 'Total Supplies', value: 2000 },
+  { label: 'Monthly Transactions', value: 100 },
+]
+</script>
 
 <template>
   <v-responsive class="border rounded" max-height="1000">
@@ -21,16 +35,14 @@
       <!-- Centered Navigation Bar below the header -->
       <v-app-bar :elevation="2" flat color="white">
         <v-toolbar-items class="d-flex justify-center w-100">
-          <v-btn text class="nav-btn"><RouterLink to="/home">Home</RouterLink></v-btn>
-          <v-btn text class="nav-btn"><RouterLink to="/barangay">Barangay</RouterLink></v-btn>
-          <v-btn text class="nav-btn"><RouterLink to="/supplies">Supplies</RouterLink></v-btn>
-          <v-btn text class="nav-btn"
-            ><RouterLink to="/transaction">Transactions</RouterLink></v-btn
-          >
+          <v-btn text class="nav-btn" @click="goTo('/home')">Home</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/barangay')">Barangay</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/supplies')">Supplies</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/transaction')">Transactions</v-btn>
         </v-toolbar-items>
       </v-app-bar>
 
-      <!--Dashboard Section -->
+      <!-- Dashboard Section -->
       <v-main>
         <v-container class="pt-10">
           <v-row justify="center" align="center" dense>
@@ -92,5 +104,10 @@
 .v-main {
   padding-top: 140px;
   background-color: beige;
+}
+
+.stat-card {
+  background-color: #f2f9f2;
+  border-radius: 12px;
 }
 </style>

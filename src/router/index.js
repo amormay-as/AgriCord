@@ -13,7 +13,6 @@ import JohnReyes from '@/views/system/profiles/JohnReyes.vue'
 import JoseTan from '@/views/system/profiles/JoseTan.vue'
 import MariaSantos from '@/views/system/profiles/MariaSantos.vue'
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -73,7 +72,6 @@ const router = createRouter({
       name: 'maria-profile',
       component: MariaSantos,
     },
-
   ],
 })
 
