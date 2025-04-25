@@ -1,5 +1,8 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const editDialog = ref(false)
 const editedIndex = ref(null)
@@ -38,12 +41,6 @@ function applyTransactions() {
 
 applyTransactions()
 
-const newSupply = ref({
-  name: '',
-  quantity: '',
-  category: '',
-})
-
 const newTransaction = ref({
   farmer: '',
   supply: '',
@@ -69,29 +66,8 @@ function addTransaction() {
   }
 }
 
-function addSupply() {
-  if (newSupply.value.name && newSupply.value.quantity && newSupply.value.category) {
-    supplies.value.push({ ...newSupply.value })
-    newSupply.value = { name: '', quantity: '', category: '' }
-  }
-}
-
-function deleteSupply(index) {
-  supplies.value.splice(index, 1)
-}
-
-function openEditDialog(index) {
-  editedIndex.value = index
-  editedQuantity.value = supplies.value[index].quantity
-  editDialog.value = true
-}
-
-function saveQuantity() {
-  if (editedIndex.value !== null) {
-    supplies.value[editedIndex.value].quantity = editedQuantity.value
-    editDialog.value = false
-    editedIndex.value = null
-  }
+function goTo(path) {
+  router.push(path)
 }
 </script>
 
@@ -115,19 +91,19 @@ function saveQuantity() {
       <!-- Navigation Bar -->
       <v-app-bar :elevation="2" flat color="white">
         <v-toolbar-items class="d-flex justify-center w-100">
-          <v-btn text class="nav-btn"><RouterLink to="/home">Home</RouterLink></v-btn>
-          <v-btn text class="nav-btn">Barangay</v-btn>
-          <v-btn text class="nav-btn"><RouterLink to="/supplies">Supplies</RouterLink></v-btn>
-          <v-btn text class="nav-btn">Transactions</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/home')">Home</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/barangay')">Barangay</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/supplies')">Supplies</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/transaction')">Transactions</v-btn>
         </v-toolbar-items>
       </v-app-bar>
 
       <!-- Transaction Section -->
       <v-main>
         <v-container class="pt-10">
-          <v-card class="mt-6 pa-6" elevation="1">
+          <v-card class="mt-8 pa-6" elevation="1">
             <div class="text-h5 font-weight-bold mb-4">Add Transaction</div>
-            <v-form @submit.prevent="addTransaction">
+            <v-form @submit.prevent="addTransaction" class="mb-6">
               <v-row dense>
                 <v-col cols="12" sm="3">
                   <v-text-field
@@ -138,7 +114,6 @@ function saveQuantity() {
                     required
                   ></v-text-field>
                 </v-col>
-
                 <v-col cols="12" sm="3">
                   <v-select
                     v-model="newTransaction.supply"
@@ -149,54 +124,46 @@ function saveQuantity() {
                     required
                   ></v-select>
                 </v-col>
-
                 <v-col cols="12" sm="3">
                   <v-text-field
                     v-model="newTransaction.date"
-                    label="Date (YYYY-MM-DD)"
+                    type="date"
+                    label="Date"
                     dense
                     outlined
                     required
                   ></v-text-field>
                 </v-col>
-
                 <v-col cols="12" sm="3">
                   <v-text-field
-                    v-model.number="newTransaction.quantity"
+                    v-model="newTransaction.quantity"
+                    type="number"
                     label="Quantity"
                     dense
                     outlined
-                    type="number"
                     required
                   ></v-text-field>
                 </v-col>
-
-                <v-col cols="12" class="d-flex justify-end">
-                  <v-btn type="submit" color="green">Add Transaction</v-btn>
-                </v-col>
               </v-row>
+              <v-btn color="green" type="submit" class="mt-2">Add</v-btn>
             </v-form>
-          </v-card>
 
-          <v-card class="mt-8 pa-6" elevation="1">
             <div class="text-h5 font-weight-bold mb-4">Transactions</div>
             <v-table>
               <thead>
                 <tr>
-                  <th class="text-left">ID</th>
-                  <th class="text-left">Farmer</th>
-                  <th class="text-left">Supply</th>
-                  <th class="text-left">Date</th>
-                  <th class="text-left">Quantity</th>
+                  <th>Farmer</th>
+                  <th>Supply</th>
+                  <th>Date</th>
+                  <th>Quantity</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(tx, index) in transactions" :key="index">
-                  <td>{{ index + 1 }}</td>
                   <td>{{ tx.farmer }}</td>
                   <td>{{ tx.supply }}</td>
                   <td>{{ tx.date }}</td>
-                  <td>{{ tx.quantity }} bags</td>
+                  <td>{{ tx.quantity }}</td>
                 </tr>
               </tbody>
             </v-table>
@@ -233,10 +200,6 @@ function saveQuantity() {
   height: auto;
   display: block;
   margin: 10px auto;
-}
-.stat-card {
-  background-color: #f2f9f2;
-  border-radius: 12px;
 }
 .v-main {
   padding-top: 140px;

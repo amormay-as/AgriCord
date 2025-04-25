@@ -1,5 +1,12 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function goTo(path) {
+  router.push(path)
+}
 
 const editDialog = ref(false)
 const editedIndex = ref(null)
@@ -66,12 +73,10 @@ function saveQuantity() {
       <!-- Navigation Bar -->
       <v-app-bar :elevation="2" flat color="white">
         <v-toolbar-items class="d-flex justify-center w-100">
-          <v-btn text class="nav-btn"><RouterLink to="/home">Home</RouterLink></v-btn>
-          <v-btn text class="nav-btn">Barangay</v-btn>
-          <v-btn text class="nav-btn">Supplies</v-btn>
-          <v-btn text class="nav-btn"
-            ><RouterLink to="/transaction">Transactions</RouterLink></v-btn
-          >
+          <v-btn text class="nav-btn" @click="goTo('/home')">Home</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/barangay')">Barangay</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/supplies')">Supplies</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/transaction')">Transactions</v-btn>
         </v-toolbar-items>
       </v-app-bar>
 
@@ -146,6 +151,8 @@ function saveQuantity() {
               </tbody>
             </v-table>
           </v-card>
+
+          <!-- Edit Dialog -->
           <v-dialog v-model="editDialog" max-width="400">
             <v-card>
               <v-card-title>Edit Quantity</v-card-title>
@@ -195,11 +202,6 @@ function saveQuantity() {
   height: auto;
   display: block;
   margin: 10px auto;
-}
-
-.stat-card {
-  background-color: #f2f9f2;
-  border-radius: 12px;
 }
 
 .v-main {

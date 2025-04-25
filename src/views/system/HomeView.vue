@@ -1,4 +1,12 @@
 <script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const goTo = (path) => {
+  router.push(path)
+}
+
 const stats = [
   { label: 'Total Farmers', value: 1125 },
   { label: 'Total Supplies', value: 2000 },
@@ -26,12 +34,10 @@ const stats = [
       <!-- Navigation Bar -->
       <v-app-bar :elevation="2" flat color="white">
         <v-toolbar-items class="d-flex justify-center w-100">
-          <v-btn text class="nav-btn">Home</v-btn>
-          <v-btn text class="nav-btn"><RouterLink to="/barangay">Barangay</RouterLink></v-btn>
-          <v-btn text class="nav-btn"><RouterLink to="/supplies">Supplies</RouterLink></v-btn>
-          <v-btn text class="nav-btn"
-            ><RouterLink to="/transaction">Transactions</RouterLink></v-btn
-          >
+          <v-btn text class="nav-btn" @click="goTo('/home')">Home</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/barangay')">Barangay</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/supplies')">Supplies</v-btn>
+          <v-btn text class="nav-btn" @click="goTo('/transaction')">Transactions</v-btn>
         </v-toolbar-items>
       </v-app-bar>
 
