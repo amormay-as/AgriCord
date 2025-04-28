@@ -29,25 +29,28 @@
       <v-main>
         <v-container class="pt-10">
 
-          <!-- Small Adding Bar -->
-          <v-row align="center" justify="center" class="mb-8">
-            <v-col cols="12" md="10">
-              <v-form @submit.prevent="addFarmer" class="d-flex align-center flex-wrap" style="gap: 10px;">
-                <v-text-field v-model="newFarmer.name" label="Name" dense outlined required class="flex-grow-1" />
-                <v-text-field v-model="newFarmer.specialty" label="Specialty" dense outlined required class="flex-grow-1" />
-                <v-text-field v-model="newFarmer.experience" label="Experience" dense outlined required class="flex-grow-1" />
-                <v-text-field v-model="newFarmer.contact" label="Contact" dense outlined required class="flex-grow-1" />
-                <v-select 
-                  v-model="newFarmer.barangay" 
-                  :items="barangays.map(b => b.name)" 
-                  label="Barangay" 
-                  dense outlined required 
-                  class="flex-grow-1"
-                />
-                <v-btn color="green" type="submit" class="mt-2" small>Add</v-btn>
-              </v-form>
-            </v-col>
-          </v-row>
+          
+<v-row align="center" justify="center" class="mb-8">
+  <v-col cols="12" md="10">
+    <v-sheet elevation="2" color="white" class="pa-4 rounded">
+      <v-form @submit.prevent="addFarmer" class="d-flex align-center flex-wrap" style="gap: 10px;">
+        <v-text-field v-model="newFarmer.name" label="Name" dense outlined required class="flex-grow-1" />
+        <v-text-field v-model="newFarmer.specialty" label="Specialty" dense outlined required class="flex-grow-1" />
+        <v-text-field v-model="newFarmer.experience" label="Experience" dense outlined required class="flex-grow-1" />
+        <v-text-field v-model="newFarmer.contact" label="Contact" dense outlined required class="flex-grow-1" />
+        <v-select 
+          v-model="newFarmer.barangay" 
+          :items="barangays.map(b => b.name)" 
+          label="Barangay" 
+          dense outlined required 
+          class="flex-grow-1"
+        />
+        <v-btn color="green" type="submit" class="mt-2" small>Add</v-btn>
+      </v-form>
+    </v-sheet>
+  </v-col>
+</v-row>
+
 
           <!-- Barangay Cards -->
           <v-row>
