@@ -1,82 +1,5 @@
-<script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-const barangays = ref([
-  {
-    name: 'AWA',
-    showFarmers: false,
-    farmers: [
-      { id: 'antonio-dela-crad', name: 'Antonio Dela Crad', },
-    ],
-    newFarmer: { name: '', specialty: '', experience: '', contact: '' }
-  },
-  {
-    name: 'AZPETIA',
-    showFarmers: false,
-    farmers: [
-      { id: 'maria', name: 'Maria Santos', },
-    ],
-    newFarmer: { name: '', specialty: '', experience: '', contact: '' }
-  },
-  {
-    name: 'PATIN-AY',
-    showFarmers: false,
-    farmers: [
-      { id: 'john-reyes', name: 'John Reyes' },
-    ],
-    newFarmer: { name: '', specialty: '', experience: '', contact: '' }
-  },
-  {
-    name: 'LUCENA',
-    showFarmers: false,
-    farmers: [
-      { id: 'etena-moreno', name: 'Etena Moreno' },
-    ],
-    newFarmer: { name: '', specialty: '', experience: '', contact: '' }
-  },
-  {
-    name: 'MAUG',
-    showFarmers: false,
-    farmers: [
-      { id: 'jose-tan', name: 'Jose Tan' },
-    ],
-    newFarmer: { name: '', specialty: '', experience: '', contact: '' }
-  },
-])
-
-function toggleFarmers(index) {
-  barangays.value[index].showFarmers = !barangays.value[index].showFarmers
-}
-
-function goToFarmerProfile(id) {
-  router.push(`/profile/${id}`)
-}
-
-function goTo(path) {
-  router.push(path)
-}
-
-function addFarmer(index) {
-  const farmer = barangays.value[index].newFarmer
-  if (farmer.name && farmer.specialty && farmer.experience && farmer.contact) {
-    const id = farmer.name.toLowerCase().replace(/\s+/g, '-')
-    barangays.value[index].farmers.push({
-      id,
-      name: farmer.name,
-      specialty: farmer.specialty,
-      experience: farmer.experience,
-      contact: farmer.contact,
-    })
-    barangays.value[index].newFarmer = { name: '', specialty: '', experience: '', contact: '' }
-  }
-}
-</script>
-
 <template>
-  <v-responsive class="border rounded" max-height="3000">
+  <v-responsive class="border rounded" max-1ght="3000">
     <v-app class="background-image">
       <!-- Header -->
       <v-app-bar class="px-3 gradient-app-bar" flat height="80">
@@ -105,6 +28,28 @@ function addFarmer(index) {
       <!-- Main Content -->
       <v-main>
         <v-container class="pt-10">
+
+          <!-- Small Adding Bar -->
+          <v-row align="center" justify="center" class="mb-8">
+            <v-col cols="12" md="10">
+              <v-form @submit.prevent="addFarmer" class="d-flex align-center flex-wrap" style="gap: 10px;">
+                <v-text-field v-model="newFarmer.name" label="Name" dense outlined required class="flex-grow-1" />
+                <v-text-field v-model="newFarmer.specialty" label="Specialty" dense outlined required class="flex-grow-1" />
+                <v-text-field v-model="newFarmer.experience" label="Experience" dense outlined required class="flex-grow-1" />
+                <v-text-field v-model="newFarmer.contact" label="Contact" dense outlined required class="flex-grow-1" />
+                <v-select 
+                  v-model="newFarmer.barangay" 
+                  :items="barangays.map(b => b.name)" 
+                  label="Barangay" 
+                  dense outlined required 
+                  class="flex-grow-1"
+                />
+                <v-btn color="green" type="submit" class="mt-2" small>Add</v-btn>
+              </v-form>
+            </v-col>
+          </v-row>
+
+          <!-- Barangay Cards -->
           <v-row>
             <v-col v-for="(barangay, index) in barangays" :key="index" cols="12" sm="6" md="4">
               <v-card class="pa-8" outlined>
@@ -128,23 +73,12 @@ function addFarmer(index) {
                          {{ farmer.contact }}
                       </div>
                     </div>
-
-                    <v-divider class="my-4"></v-divider>
-
-                    <div class="font-weight-bold mb-2">Add Farmer</div>
-                    <v-form @submit.prevent="addFarmer(index)">
-                      <v-text-field v-model="barangay.newFarmer.barangay" label="Barangay" dense outlined required />
-                      <v-text-field v-model="barangay.newFarmer.name" label="Name" dense outlined required />
-                      <v-text-field v-model="barangay.newFarmer.specialty" label="Specialty" dense outlined required />
-                      <v-text-field v-model="barangay.newFarmer.experience" label="Experience" dense outlined required />
-                      <v-text-field v-model="barangay.newFarmer.contact" label="Contact" dense outlined required />
-                      <v-btn color="green" type="submit" block class="mt-2">Add Farmer</v-btn>
-                    </v-form>
                   </div>
                 </v-card-text>
               </v-card>
             </v-col>
           </v-row>
+
         </v-container>
       </v-main>
 
@@ -155,6 +89,59 @@ function addFarmer(index) {
     </v-app>
   </v-responsive>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const barangays = ref([
+  { name: 'AWA', showFarmers: false, farmers: [{ id: 'antonio-dela-crad', name: 'Antonio Dela Crad' }] },
+  { name: 'AZPETIA', showFarmers: false, farmers: [{ id: 'maria', name: 'Maria Santos' }] },
+  { name: 'PATIN-AY', showFarmers: false, farmers: [{ id: 'john-reyes', name: 'John Reyes' }] },
+  { name: 'LUCENA', showFarmers: false, farmers: [{ id: 'etena-moreno', name: 'Etena Moreno' }] },
+  { name: 'MAUG', showFarmers: false, farmers: [{ id: 'jose-tan', name: 'Jose Tan' }] },
+])
+
+const newFarmer = ref({
+  name: '',
+  specialty: '',
+  experience: '',
+  contact: '',
+  barangay: '',
+})
+
+function toggleFarmers(index) {
+  barangays.value[index].showFarmers = !barangays.value[index].showFarmers
+}
+
+function goToFarmerProfile(id) {
+  router.push(`/profile/${id}`)
+}
+
+function goTo(path) {
+  router.push(path)
+}
+
+function addFarmer() {
+  const farmer = newFarmer.value
+  if (farmer.name && farmer.specialty && farmer.experience && farmer.contact && farmer.barangay) {
+    const id = farmer.name.toLowerCase().replace(/\s+/g, '-')
+    const barangay = barangays.value.find(b => b.name === farmer.barangay)
+    if (barangay) {
+      barangay.farmers.push({
+        id,
+        name: farmer.name,
+        specialty: farmer.specialty,
+        experience: farmer.experience,
+        contact: farmer.contact,
+      })
+      newFarmer.value = { name: '', specialty: '', experience: '', contact: '', barangay: '' }
+    }
+  }
+}
+</script>
 
 <style scoped>
 .gradient-app-bar {
