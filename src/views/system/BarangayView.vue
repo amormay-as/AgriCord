@@ -29,7 +29,7 @@
       <v-main>
         <v-container class="pt-10">
 
-          <!-- Small Adding Bar -->
+          
 <v-row align="center" justify="center" class="mb-8">
   <v-col cols="12" md="10">
     <v-sheet elevation="2" color="white" class="pa-4 rounded">
