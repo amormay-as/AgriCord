@@ -1,32 +1,24 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useTransactionStore } from '@/stores/transaction'
 
 const router = useRouter()
+const transactionStore = useTransactionStore()
 
 const editDialog = ref(false)
 const editedIndex = ref(null)
 const editedQuantity = ref('')
 
-const transactions = ref([
-  { farmer: 'Antonio Dela Crad', supply: 'Urea Fertilizer', date: '2024-04-22', quantity: 20 },
-  { farmer: 'Maria Santos', supply: 'Hybrid Rice Seeds', date: '2024-04-22', quantity: 20 },
-  { farmer: 'John Reyes', supply: 'Corn Seeds', date: '2024-04-20', quantity: 50 },
-  { farmer: 'Etena Moreno', supply: 'Corn Seeds', date: '2024-04-18', quantity: 60 },
-  { farmer: 'Jose Tan', supply: 'Urea Fertilizer', date: '2024-04-18', quantity: 10 },
-])
-
-const supplies = ref([
-  { name: 'Urea Fertilizer', quantity: '100 bags', category: 'Fertilizer' },
-  { name: 'Hybrid Rice Seeds', quantity: '200 bags', category: 'Fertilizer' },
-  { name: 'Ammonium Sulfate', quantity: '150 bags', category: 'Seed' },
-  { name: 'Corn Seeds', quantity: '300 bags', category: 'Seed' },
-  { name: 'Complete Fertilizer', quantity: '120 bags', category: 'Pesticide' },
-  { name: 'Insecticide', quantity: '80 liters', category: 'Pesticide' },
-])
+const newTransaction = ref({
+  farmer: '',
+  supply: '',
+  date: '',
+  quantity: null,
+})
 
 function applyTransactions() {
-  for (const tx of transactions.value) {
+  for (const tx of transactionStore.transactions) {
     const supply = supplies.value.find((s) => s.name === tx.supply)
     if (supply) {
       const match = supply.quantity.match(/^(\d+)\s*(\w+)$/)
@@ -39,32 +31,41 @@ function applyTransactions() {
   }
 }
 
-applyTransactions()
+const supplies = ref([
+  { name: 'Urea Fertilizer', quantity: '100 bags', category: 'Fertilizer' },
+  { name: 'Hybrid Rice Seeds', quantity: '200 bags', category: 'Fertilizer' },
+  { name: 'Ammonium Sulfate', quantity: '150 bags', category: 'Seed' },
+  { name: 'Corn Seeds', quantity: '300 bags', category: 'Seed' },
+  { name: 'Complete Fertilizer', quantity: '120 bags', category: 'Pesticide' },
+  { name: 'Insecticide', quantity: '80 liters', category: 'Pesticide' },
+])
 
-const newTransaction = ref({
-  farmer: '',
-  supply: '',
-  date: '',
-  quantity: null,
-})
-
-function addTransaction() {
+async function addTransaction() {
   if (
     newTransaction.value.farmer &&
     newTransaction.value.supply &&
     newTransaction.value.date &&
     newTransaction.value.quantity
   ) {
-    transactions.value.push({ ...newTransaction.value })
-    applyTransactions()
-    newTransaction.value = {
-      farmer: '',
-      supply: '',
-      date: '',
-      quantity: null,
+    try {
+      await transactionStore.addTransaction({
+        ...newTransaction.value,
+        quantity: Number(newTransaction.value.quantity),
+      })
+      applyTransactions()
+      newTransaction.value = {
+        farmer: '',
+        supply: '',
+        date: '',
+        quantity: null,
+      }
+    } catch (err) {
+      console.error('Transaction not saved to Supabase:', err)
     }
   }
 }
+
+transactionStore.fetchTransactions().then(applyTransactions)
 
 function goTo(path) {
   router.push(path)
@@ -159,7 +160,7 @@ function goTo(path) {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(tx, index) in transactions" :key="index">
+                <tr v-for="(tx, index) in transactionStore.transactions" :key="index">
                   <td>{{ tx.farmer }}</td>
                   <td>{{ tx.supply }}</td>
                   <td>{{ tx.date }}</td>
