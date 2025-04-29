@@ -1,6 +1,13 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import {
+  supplies,
+  fetchSupplies,
+  addSupply,
+  updateSupply,
+  deleteSupply as deleteSupplyFromDb,
+} from '@/stores/supplies.js' // use the store now
 
 const router = useRouter()
 
@@ -11,15 +18,7 @@ function goTo(path) {
 const editDialog = ref(false)
 const editedIndex = ref(null)
 const editedQuantity = ref('')
-
-const supplies = ref([
-  { name: 'Urea Fertilizer', quantity: '100 bags', category: 'Fertilizer' },
-  { name: 'Hybrid Rice Seeds', quantity: '200 bags', category: 'Fertilizer' },
-  { name: 'Ammonium Sulfate', quantity: '150 bags', category: 'Seed' },
-  { name: 'Corn Seeds', quantity: '300 bags', category: 'Seed' },
-  { name: 'Complete Fertilizer', quantity: '120 bags', category: 'Pesticide' },
-  { name: 'Insecticide', quantity: '80 liters', category: 'Pesticide' },
-])
+const editedId = ref(null)
 
 const newSupply = ref({
   name: '',
@@ -27,28 +26,43 @@ const newSupply = ref({
   category: '',
 })
 
-function addSupply() {
+// Fetch supplies when the component is mounted
+onMounted(() => {
+  fetchSupplies()
+})
+
+async function addNewSupply() {
   if (newSupply.value.name && newSupply.value.quantity && newSupply.value.category) {
-    supplies.value.push({ ...newSupply.value })
+    await addSupply({
+      name: newSupply.value.name,
+      quantity: newSupply.value.quantity,
+      category: newSupply.value.category,
+    })
     newSupply.value = { name: '', quantity: '', category: '' }
   }
-}
-
-function deleteSupply(index) {
-  supplies.value.splice(index, 1)
 }
 
 function openEditDialog(index) {
   editedIndex.value = index
   editedQuantity.value = supplies.value[index].quantity
+  editedId.value = supplies.value[index].id // Store ID for update
   editDialog.value = true
 }
 
-function saveQuantity() {
-  if (editedIndex.value !== null) {
-    supplies.value[editedIndex.value].quantity = editedQuantity.value
+async function saveQuantity() {
+  if (editedId.value !== null) {
+    await updateSupply(editedId.value, { quantity: editedQuantity.value })
+    await fetchSupplies() // Refresh list after updating
     editDialog.value = false
     editedIndex.value = null
+    editedId.value = null
+  }
+}
+
+async function deleteSupply(index) {
+  const id = supplies.value[index].id
+  if (id) {
+    await deleteSupplyFromDb(id)
   }
 }
 </script>
@@ -85,7 +99,7 @@ function saveQuantity() {
         <v-container class="pt-10">
           <v-card class="mt-8 pa-6" elevation="1">
             <div class="text-h5 font-weight-bold mb-4">Add Supply</div>
-            <v-form @submit.prevent="addSupply" class="mb-6">
+            <v-form @submit.prevent="addNewSupply" class="mb-6">
               <v-row dense>
                 <v-col cols="12" sm="3">
                   <v-text-field
