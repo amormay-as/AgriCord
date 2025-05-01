@@ -11,6 +11,7 @@ import EtenaMoreno from '@/views/system/profiles/EtenaMoreno.vue'
 import JohnReyes from '@/views/system/profiles/JohnReyes.vue'
 import JoseTan from '@/views/system/profiles/JoseTan.vue'
 import MariaSantos from '@/views/system/profiles/MariaSantos.vue'
+import RegisterView from '@/views/auth/RegisterView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +40,11 @@ const router = createRouter({
       path: '/transaction',
       name: 'transaction',
       component: TransactionView,
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
     },
     // Add route for Antonio's profile
     {

@@ -1,5 +1,28 @@
 <script setup>
-import {} from 'vue'
+import { requiredValidator, emailValidator, passwordValidator } from '@/utils/validators'
+import { ref } from 'vue'
+
+const isPasswordVisible = ref(false)
+
+const refVForm = ref()
+
+const formDataDefault = {
+  email: '',
+  password: '',
+}
+
+const formData = ref({
+  ...formDataDefault,
+})
+
+const onSubmit = () => {
+  alert(formData.value.email)
+}
+const onFormSubmit = () => {
+  refVForm.value?.validate().then(({ valid }) => {
+    if (valid) onSubmit()
+  })
+}
 </script>
 
 <template>
@@ -24,14 +47,33 @@ import {} from 'vue'
                 />
 
                 <!-- Login Form -->
-                <v-card-text class="bg-surface-light pt-4">
-                  <v-form fast-fail @submit.prevent>
-                    <v-text-field label="Email" outlined dense></v-text-field>
-                    <v-text-field label="Password" type="password" outlined dense></v-text-field>
+                <v-card-text class="pt-4">
+                  <v-form ref="refVForm" fast-fail @submit.prevent="onFormSubmit">
+                    <v-text-field
+                      v-model="formData.email"
+                      label="Email"
+                      outlined
+                      dense
+                      :rules="[requiredValidator, emailValidator]"
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="formData.password"
+                      label="Password"
+                      :type="isPasswordVisible ? 'text' : 'password'"
+                      :append-inner-icon="isPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                      @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                      outlined
+                      dense
+                      :rules="[requiredValidator, passwordValidator]"
+                    ></v-text-field>
                     <RouterLink to="/home">
                       <v-btn class="mt-2" type="submit" block>Login</v-btn>
                     </RouterLink>
                   </v-form>
+                  <div class="text-center mt-4">
+                    Don't have an account?
+                    <RouterLink to="/register"><b>Sign Up</b></RouterLink>
+                  </div>
                 </v-card-text>
               </v-card>
             </v-col>
