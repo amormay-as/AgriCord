@@ -1,5 +1,5 @@
 <template>
-  <v-responsive class="border rounded" max-1ght="3000">
+  <v-responsive class="border rounded" max-height="3000">
     <v-app class="background-image">
       <!-- Header -->
       <v-app-bar class="px-3 gradient-app-bar" flat height="80">
@@ -28,29 +28,27 @@
       <!-- Main Content -->
       <v-main>
         <v-container class="pt-10">
-
-          
-<v-row align="center" justify="center" class="mb-8">
-  <v-col cols="12" md="10">
-    <v-sheet elevation="2" color="white" class="pa-4 rounded">
-      <v-form @submit.prevent="addFarmer" class="d-flex align-center flex-wrap" style="gap: 10px;">
-        <v-text-field v-model="newFarmer.name" label="Name" dense outlined required class="flex-grow-1" />
-        <v-text-field v-model="newFarmer.specialty" label="Specialty" dense outlined required class="flex-grow-1" />
-        <v-text-field v-model="newFarmer.experience" label="Experience" dense outlined required class="flex-grow-1" />
-        <v-text-field v-model="newFarmer.contact" label="Contact" dense outlined required class="flex-grow-1" />
-        <v-select 
-          v-model="newFarmer.barangay" 
-          :items="barangays.map(b => b.name)" 
-          label="Barangay" 
-          dense outlined required 
-          class="flex-grow-1"
-        />
-        <v-btn color="green" type="submit" class="mt-2" small>Add</v-btn>
-      </v-form>
-    </v-sheet>
-  </v-col>
-</v-row>
-
+          <!-- Add Farmer Form -->
+          <v-row align="center" justify="center" class="mb-8">
+            <v-col cols="12" md="10">
+              <v-sheet elevation="2" color="white" class="pa-4 rounded">
+                <v-form @submit.prevent="addFarmerToBarangay" class="d-flex align-center flex-wrap" style="gap: 10px;">
+                  <v-text-field v-model="newFarmer.name" label="Name" dense outlined required class="flex-grow-1" />
+                  <v-text-field v-model="newFarmer.specialty" label="Specialty" dense outlined required class="flex-grow-1" />
+                  <v-text-field v-model="newFarmer.experience" label="Experience" dense outlined required class="flex-grow-1" />
+                  <v-text-field v-model="newFarmer.contact" label="Contact" dense outlined required class="flex-grow-1" />
+                  <v-select 
+                    v-model="newFarmer.barangay" 
+                    :items="barangays.map(b => b.name).sort()" 
+                    label="Barangay" 
+                    dense outlined required 
+                    class="flex-grow-1"
+                  />
+                  <v-btn color="green" type="submit" class="mt-2" small>Add</v-btn>
+                </v-form>
+              </v-sheet>
+            </v-col>
+          </v-row>
 
           <!-- Barangay Cards -->
           <v-row>
@@ -71,9 +69,9 @@
                         {{ farmer.name }}
                       </v-btn>
                       <div class="text-caption mt-1">
-                         {{ farmer.specialty }}<br>
-                         {{ farmer.experience }}<br>
-                         {{ farmer.contact }}
+                        {{ farmer.specialty }}<br>
+                        {{ farmer.experience }}<br>
+                        {{ farmer.contact }}
                       </div>
                     </div>
                   </div>
@@ -94,17 +92,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { fetchFarmers, addFarmer, farmers } from '@/stores/barangay'
 
 const router = useRouter()
 
 const barangays = ref([
-  { name: 'AWA', showFarmers: false, farmers: [{ id: 'antonio-dela-crad', name: 'Antonio Dela Crad' }] },
-  { name: 'AZPETIA', showFarmers: false, farmers: [{ id: 'maria', name: 'Maria Santos' }] },
-  { name: 'PATIN-AY', showFarmers: false, farmers: [{ id: 'john-reyes', name: 'John Reyes' }] },
-  { name: 'LUCENA', showFarmers: false, farmers: [{ id: 'etena-moreno', name: 'Etena Moreno' }] },
-  { name: 'MAUG', showFarmers: false, farmers: [{ id: 'jose-tan', name: 'Jose Tan' }] },
+  { name: 'AWA', showFarmers: false, farmers: [] },
+  { name: 'AZPETIA', showFarmers: false, farmers: [] },
+  { name: 'PATIN-AY', showFarmers: false, farmers: [] },
+  { name: 'LUCENA', showFarmers: false, farmers: [] },
+  { name: 'MAUG', showFarmers: false, farmers: [] },
 ])
 
 const newFarmer = ref({
@@ -113,6 +112,16 @@ const newFarmer = ref({
   experience: '',
   contact: '',
   barangay: '',
+})
+
+onMounted(async () => {
+  await fetchFarmers()
+  for (const farmer of farmers.value) {
+    const b = barangays.value.find(b => b.name === farmer.barangay)
+    if (b && !b.farmers.some(f => f.id === farmer.id)) {
+      b.farmers.push(farmer)
+    }
+  }
 })
 
 function toggleFarmers(index) {
@@ -127,20 +136,27 @@ function goTo(path) {
   router.push(path)
 }
 
-function addFarmer() {
-  const farmer = newFarmer.value
+async function addFarmerToBarangay() {
+  const farmer = { ...newFarmer.value }
+
   if (farmer.name && farmer.specialty && farmer.experience && farmer.contact && farmer.barangay) {
-    const id = farmer.name.toLowerCase().replace(/\s+/g, '-')
-    const barangay = barangays.value.find(b => b.name === farmer.barangay)
-    if (barangay) {
-      barangay.farmers.push({
-        id,
-        name: farmer.name,
-        specialty: farmer.specialty,
-        experience: farmer.experience,
-        contact: farmer.contact,
-      })
-      newFarmer.value = { name: '', specialty: '', experience: '', contact: '', barangay: '' }
+    const inserted = await addFarmer(farmer)
+    if (!inserted) {
+      alert('Failed to add farmer. Please check your Supabase policy or network.')
+      return
+    }
+
+    const barangayObj = barangays.value.find(b => b.name === farmer.barangay)
+    if (barangayObj) {
+      barangayObj.farmers.push(inserted)
+    }
+
+    newFarmer.value = {
+      name: '',
+      specialty: '',
+      experience: '',
+      contact: '',
+      barangay: '',
     }
   }
 }
