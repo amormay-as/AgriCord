@@ -1,3 +1,4 @@
+import { supabase } from '@/supabase'
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/auth/LoginView.vue'
 import HomeView from '@/views/system/HomeView.vue'
@@ -73,6 +74,23 @@ const router = createRouter({
       component: MariaSantos,
     },
   ],
+})
+router.beforeEach(async (to, from, next) => {
+  const publicPages = ['login', 'register']
+  const authRequired = !publicPages.includes(to.name)
+
+  const { data } = await supabase.auth.getSession()
+  const isLoggedIn = !!data.session
+
+  if (authRequired && !isLoggedIn) {
+    console.log('Redirecting to login')
+    next({ name: 'login' })
+  } else if ((to.name === 'login' || to.name === 'register') && isLoggedIn) {
+    console.log('Already logged in, redirecting to home')
+    next({ name: 'home' })
+  } else {
+    next() // Allow navigation
+  }
 })
 
 export default router

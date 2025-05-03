@@ -1,9 +1,12 @@
 <script setup>
+import { formActionDefault, supabase } from '@/supabase'
 import { requiredValidator, emailValidator, passwordValidator } from '@/utils/validators'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const isPasswordVisible = ref(false)
-
 const refVForm = ref()
 
 const formDataDefault = {
@@ -15,9 +18,32 @@ const formData = ref({
   ...formDataDefault,
 })
 
-const onSubmit = () => {
-  alert(formData.value.email)
+const formAction = ref({
+  ...formActionDefault,
+})
+
+const onSubmit = async () => {
+  formAction.value = { ...formActionDefault }
+  formAction.value.formProcess = true
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: formData.value.email,
+    password: formData.value.password,
+  })
+
+  if (error) {
+    // console.log(error)
+    formAction.value.formErrorMessage = error.message
+    formAction.value.formStatus = error.status
+  } else if (data) {
+    // console.log(data)
+    formAction.value.formSuccessMessage = 'Successfully Logged In'
+    router.replace('/home')
+  }
+
+  refVForm.value?.reset()
+  formAction.value.formProcess = false
 }
+
 const onFormSubmit = () => {
   refVForm.value?.validate().then(({ valid }) => {
     if (valid) onSubmit()
@@ -45,7 +71,17 @@ const onFormSubmit = () => {
                   class="logo"
                   style="width: 80px; height: 80px"
                 />
-
+                <v-alert
+                  v-if="formAction.formErrorMessage"
+                  :text="formAction.formErrorMessage"
+                  title="Ooops!"
+                  type="error"
+                  class="pb-3"
+                  variant="tonal"
+                  density="compact"
+                  border="start"
+                  closable
+                ></v-alert>
                 <!-- Login Form -->
                 <v-card-text class="pt-4">
                   <v-form ref="refVForm" fast-fail @submit.prevent="onFormSubmit">
@@ -66,9 +102,17 @@ const onFormSubmit = () => {
                       dense
                       :rules="[requiredValidator, passwordValidator]"
                     ></v-text-field>
-                    <RouterLink to="/home">
-                      <v-btn class="mt-2" type="submit" block>Login</v-btn>
-                    </RouterLink>
+                    <v-btn
+                      color="success"
+                      large
+                      block
+                      type="submit"
+                      prepend-icon="mdi-Login"
+                      :disabled="formAction.formProcess"
+                      :loading="formAction.formProcess"
+                    >
+                      Log In
+                    </v-btn>
                   </v-form>
                   <div class="text-center mt-4">
                     Don't have an account?
