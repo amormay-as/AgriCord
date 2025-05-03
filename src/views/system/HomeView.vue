@@ -1,7 +1,13 @@
 <script setup>
 import { useRouter } from 'vue-router'
+import { supabase } from '@/supabase.js'
 
 const router = useRouter()
+
+const logout = async () => {
+  await supabase.auth.signOut()
+  router.push('/login')
+}
 
 const goTo = (path) => {
   router.push(path)
@@ -38,6 +44,7 @@ const stats = [
           <v-btn text class="nav-btn" @click="goTo('/barangay')">Barangay</v-btn>
           <v-btn text class="nav-btn" @click="goTo('/supplies')">Supplies</v-btn>
           <v-btn text class="nav-btn" @click="goTo('/transaction')">Transactions</v-btn>
+          <v-btn text class="nav-btn" @click="logout">Logout</v-btn>
         </v-toolbar-items>
       </v-app-bar>
 
