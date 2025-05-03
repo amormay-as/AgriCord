@@ -22,35 +22,67 @@
           <v-btn text class="nav-btn" @click="goTo('/barangay')">Barangay</v-btn>
           <v-btn text class="nav-btn" @click="goTo('/supplies')">Supplies</v-btn>
           <v-btn text class="nav-btn" @click="goTo('/transaction')">Transactions</v-btn>
+          <v-btn text class="nav-btn" @click="logout">Logout</v-btn>
         </v-toolbar-items>
       </v-app-bar>
 
       <!-- Main Content -->
       <v-main>
         <v-container class="pt-10">
-
-          
-<v-row align="center" justify="center" class="mb-8">
-  <v-col cols="12" md="10">
-    <v-sheet elevation="2" color="white" class="pa-4 rounded">
-      <v-form @submit.prevent="addFarmer" class="d-flex align-center flex-wrap" style="gap: 10px;">
-        <v-text-field v-model="newFarmer.name" label="Name" dense outlined required class="flex-grow-1" />
-        <v-text-field v-model="newFarmer.specialty" label="Specialty" dense outlined required class="flex-grow-1" />
-        <v-text-field v-model="newFarmer.experience" label="Experience" dense outlined required class="flex-grow-1" />
-        <v-text-field v-model="newFarmer.contact" label="Contact" dense outlined required class="flex-grow-1" />
-        <v-select 
-          v-model="newFarmer.barangay" 
-          :items="barangays.map(b => b.name)" 
-          label="Barangay" 
-          dense outlined required 
-          class="flex-grow-1"
-        />
-        <v-btn color="green" type="submit" class="mt-2" small>Add</v-btn>
-      </v-form>
-    </v-sheet>
-  </v-col>
-</v-row>
-
+          <v-row align="center" justify="center" class="mb-8">
+            <v-col cols="12" md="10">
+              <v-sheet elevation="2" color="white" class="pa-4 rounded">
+                <v-form
+                  @submit.prevent="addFarmer"
+                  class="d-flex align-center flex-wrap"
+                  style="gap: 10px"
+                >
+                  <v-text-field
+                    v-model="newFarmer.name"
+                    label="Name"
+                    dense
+                    outlined
+                    required
+                    class="flex-grow-1"
+                  />
+                  <v-text-field
+                    v-model="newFarmer.specialty"
+                    label="Specialty"
+                    dense
+                    outlined
+                    required
+                    class="flex-grow-1"
+                  />
+                  <v-text-field
+                    v-model="newFarmer.experience"
+                    label="Experience"
+                    dense
+                    outlined
+                    required
+                    class="flex-grow-1"
+                  />
+                  <v-text-field
+                    v-model="newFarmer.contact"
+                    label="Contact"
+                    dense
+                    outlined
+                    required
+                    class="flex-grow-1"
+                  />
+                  <v-select
+                    v-model="newFarmer.barangay"
+                    :items="barangays.map((b) => b.name)"
+                    label="Barangay"
+                    dense
+                    outlined
+                    required
+                    class="flex-grow-1"
+                  />
+                  <v-btn color="green" type="submit" class="mt-2" small>Add</v-btn>
+                </v-form>
+              </v-sheet>
+            </v-col>
+          </v-row>
 
           <!-- Barangay Cards -->
           <v-row>
@@ -71,9 +103,9 @@
                         {{ farmer.name }}
                       </v-btn>
                       <div class="text-caption mt-1">
-                         {{ farmer.specialty }}<br>
-                         {{ farmer.experience }}<br>
-                         {{ farmer.contact }}
+                        {{ farmer.specialty }}<br />
+                        {{ farmer.experience }}<br />
+                        {{ farmer.contact }}
                       </div>
                     </div>
                   </div>
@@ -81,7 +113,6 @@
               </v-card>
             </v-col>
           </v-row>
-
         </v-container>
       </v-main>
 
@@ -96,11 +127,21 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { supabase } from '@/supabase.js'
 
 const router = useRouter()
 
+const logout = async () => {
+  await supabase.auth.signOut()
+  router.push('/login')
+}
+
 const barangays = ref([
-  { name: 'AWA', showFarmers: false, farmers: [{ id: 'antonio-dela-crad', name: 'Antonio Dela Crad' }] },
+  {
+    name: 'AWA',
+    showFarmers: false,
+    farmers: [{ id: 'antonio-dela-crad', name: 'Antonio Dela Crad' }],
+  },
   { name: 'AZPETIA', showFarmers: false, farmers: [{ id: 'maria', name: 'Maria Santos' }] },
   { name: 'PATIN-AY', showFarmers: false, farmers: [{ id: 'john-reyes', name: 'John Reyes' }] },
   { name: 'LUCENA', showFarmers: false, farmers: [{ id: 'etena-moreno', name: 'Etena Moreno' }] },
@@ -131,7 +172,7 @@ function addFarmer() {
   const farmer = newFarmer.value
   if (farmer.name && farmer.specialty && farmer.experience && farmer.contact && farmer.barangay) {
     const id = farmer.name.toLowerCase().replace(/\s+/g, '-')
-    const barangay = barangays.value.find(b => b.name === farmer.barangay)
+    const barangay = barangays.value.find((b) => b.name === farmer.barangay)
     if (barangay) {
       barangay.farmers.push({
         id,

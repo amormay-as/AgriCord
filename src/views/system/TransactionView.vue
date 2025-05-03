@@ -1,10 +1,16 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { supabase } from '@/supabase.js'
 import { useTransactionStore } from '@/stores/transaction'
 
 const router = useRouter()
 const transactionStore = useTransactionStore()
+
+const logout = async () => {
+  await supabase.auth.signOut()
+  router.push('/login')
+}
 
 const editDialog = ref(false)
 const editedIndex = ref(null)
@@ -96,6 +102,7 @@ function goTo(path) {
           <v-btn text class="nav-btn" @click="goTo('/barangay')">Barangay</v-btn>
           <v-btn text class="nav-btn" @click="goTo('/supplies')">Supplies</v-btn>
           <v-btn text class="nav-btn" @click="goTo('/transaction')">Transactions</v-btn>
+          <v-btn text class="nav-btn" @click="logout">Logout</v-btn>
         </v-toolbar-items>
       </v-app-bar>
 

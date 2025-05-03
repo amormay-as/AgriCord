@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { supabase } from '@/supabase.js'
 import {
   supplies,
   fetchSupplies,
@@ -10,6 +11,11 @@ import {
 } from '@/stores/supplies.js' // use the store now
 
 const router = useRouter()
+
+const logout = async () => {
+  await supabase.auth.signOut()
+  router.push('/login')
+}
 
 function goTo(path) {
   router.push(path)
@@ -91,6 +97,7 @@ async function deleteSupply(index) {
           <v-btn text class="nav-btn" @click="goTo('/barangay')">Barangay</v-btn>
           <v-btn text class="nav-btn" @click="goTo('/supplies')">Supplies</v-btn>
           <v-btn text class="nav-btn" @click="goTo('/transaction')">Transactions</v-btn>
+          <v-btn text class="nav-btn" @click="logout">Logout</v-btn>
         </v-toolbar-items>
       </v-app-bar>
 
