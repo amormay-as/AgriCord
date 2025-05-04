@@ -34,7 +34,7 @@ function applyTransactions() {
     if (supply) {
       const match = supply.quantity.match(/^(\d+)\s*(\w+)$/)
       if (match) {
-        const [_, num, unit] = match
+        const [num, unit] = match
         const newQty = Math.max(0, parseInt(num) - tx.quantity)
         supply.quantity = `${newQty} ${unit}`
       }

@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/supabase.js'
 
@@ -13,11 +14,76 @@ const goTo = (path) => {
   router.push(path)
 }
 
-const stats = [
-  { label: 'Total Farmers', value: 1125 },
-  { label: 'Total Supplies', value: 2000 },
-  { label: 'Monthly Transactions', value: 100 },
-]
+const stats = ref([
+  { label: 'Total Farmers', value: 0 },
+  { label: 'Available Supplies', value: 0 },
+  { label: 'Monthly Transactions', value: 0 },
+])
+
+// ✅ Moved outside the other function
+const fetchTotalFarmers = async () => {
+  const { count, error } = await supabase
+    .from('farmers')
+    .select('*', { count: 'exact', head: true })
+
+  if (error) {
+    console.error('Error fetching farmers:', error)
+    return
+  }
+
+  stats.value[0].value = count
+}
+
+const fetchAvailableSupplies = async () => {
+  const { data: supplies, error: suppliesError } = await supabase
+    .from('farm_supplies')
+    .select('quantity')
+
+  if (suppliesError) {
+    console.error('Error fetching supplies:', suppliesError)
+    return
+  }
+
+  const totalSupplies = supplies.reduce((sum, s) => sum + (s.quantity || 0), 0)
+
+  const { data: transactions, error: transactionsError } = await supabase
+    .from('transactions')
+    .select('quantity')
+
+  if (transactionsError) {
+    console.error('Error fetching transactions:', transactionsError)
+    return
+  }
+
+  const totalUsed = transactions.reduce((sum, t) => sum + (t.quantity || 0), 0)
+
+  stats.value[1].value = totalSupplies - totalUsed
+}
+
+const fetchMonthlyTransactions = async () => {
+  const now = new Date()
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString()
+
+  const { count, error } = await supabase
+    .from('transactions')
+    .select('*', { count: 'exact', head: true })
+    .gte('created_at', firstDay)
+    .lte('created_at', lastDay)
+
+  if (error) {
+    console.error('Error fetching transactions:', error)
+    return
+  }
+
+  stats.value[2].value = count
+}
+
+onMounted(() => {
+  fetchTotalFarmers()
+  fetchAvailableSupplies()
+  fetchMonthlyTransactions()
+})
 </script>
 
 <template>
@@ -52,13 +118,14 @@ const stats = [
       <v-main>
         <v-container class="pt-2">
           <br />
-          <div class="text-h4 font-weight-bold mb-2 dashboard-title">Dashboard</div>
+          <div class="text-h5 font-weight-bold mb-2 dashboard-title">Dashboard</div>
 
           <v-row justify="center" align="center" dense>
             <!-- welcome  -->
             <v-col cols="12">
-              <v-card class="mt-3 pa-6" elevation="1">
-                <span class="font-weight-bold">Welcome to AgriCord!</span><br /><br />
+              <v-card class="mt-3 pa-6 head" elevation="1">
+                <h2 class="font-weight-bol">Welcome to AgriCord!</h2>
+                <br />
                 <p>
                   Track and manage your farm supplies, monitor usage, and keep your records
                   organized all in one place.
@@ -78,20 +145,37 @@ const stats = [
             >
               <!-- Card for Total Farmers -->
               <v-card v-if="i === 0" class="pa-5 stat-card farmers-card" elevation="2">
-                <div class="text-h5 font-weight-bold">{{ item.value }}</div>
-                <div class="text-subtitle-2">{{ item.label }}</div>
+                <div class="d-flex flex-column align-center">
+                  <div class="d-flex align-center justify-center">
+                    <div class="text-h4 font-weight-bold mr-2 value">{{ item.value }}</div>
+                    <img src="@/assets/img/farmers.png" alt="Farmer Icon" style="height: 40px" />
+                  </div>
+                  <div class="text-subtitle-2 mt-2">{{ item.label }}</div>
+                </div>
               </v-card>
 
-              <!-- Card for Total Supplies -->
               <v-card v-else-if="i === 1" class="pa-5 stat-card supplies-card" elevation="2">
-                <div class="text-h5 font-weight-bold">{{ item.value }}</div>
-                <div class="text-subtitle-2">{{ item.label }}</div>
+                <div class="d-flex flex-column align-center">
+                  <div class="d-flex align-center justify-center">
+                    <div class="text-h4 font-weight-bold mr-2 value">{{ item.value }}</div>
+                    <img src="@/assets/img/supplies.png" alt="Supplies Icon" style="height: 40px" />
+                  </div>
+                  <div class="text-subtitle-2 mt-2">{{ item.label }}</div>
+                </div>
               </v-card>
 
-              <!-- Card for Monthly Transactions -->
               <v-card v-else class="pa-5 stat-card transactions-card" elevation="2">
-                <div class="text-h5 font-weight-bold">{{ item.value }}</div>
-                <div class="text-subtitle-2">{{ item.label }}</div>
+                <div class="d-flex flex-column align-center">
+                  <div class="d-flex align-center justify-center">
+                    <div class="text-h4 font-weight-bold mr-2 value">{{ item.value }}</div>
+                    <img
+                      src="@/assets/img/transac.png"
+                      alt="Transaction Icon"
+                      style="height: 40px"
+                    />
+                  </div>
+                  <div class="text-subtitle-2 mt-2">{{ item.label }}</div>
+                </div>
               </v-card>
             </v-col>
           </v-row>
@@ -113,7 +197,8 @@ const stats = [
 </template>
 
 <style scoped>
-.dashboard-title {
+.dashboard-title,
+.value {
   color: #2e7d32;
 }
 .footer {
@@ -149,6 +234,13 @@ const stats = [
 .stat-card {
   background-color: #f2f9f2;
   border-radius: 12px;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #d1f0d1, #e8f5e9); /* soft green gradient */
 }
 
 .v-card {
