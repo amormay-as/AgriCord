@@ -12,10 +12,6 @@ const logout = async () => {
   router.push('/login')
 }
 
-const editDialog = ref(false)
-const editedIndex = ref(null)
-const editedQuantity = ref('')
-
 const newTransaction = ref({
   farmer: '',
   supply: '',
@@ -38,7 +34,7 @@ function applyTransactions() {
     if (supply) {
       const match = supply.quantity.match(/^(\d+)\s*(\w+)$/)
       if (match) {
-        const [_, num, unit] = match
+        const [num, unit] = match
         const newQty = Math.max(0, parseInt(num) - tx.quantity)
         supply.quantity = `${newQty} ${unit}`
       }

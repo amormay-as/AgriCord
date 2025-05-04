@@ -126,27 +126,28 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter }        from 'vue-router'
+import { useRouter } from 'vue-router'
 
-import {
-  fetchFarmers,
-  farmers
-} from '@/stores/farmers.js'
+import { fetchFarmers, farmers } from '@/stores/farmers.js'
 
 const router = useRouter()
 
 // 1. Define your static barangays (no initial farmers)
 const barangays = ref([
-  { name: 'AWA',    showFarmers: false, farmers: [] },
-  { name: 'AZPETIA',showFarmers: false, farmers: [] },
-  { name: 'PATIN-AY',showFarmers: false, farmers: [] },
+  { name: 'AWA', showFarmers: false, farmers: [] },
+  { name: 'AZPETIA', showFarmers: false, farmers: [] },
+  { name: 'PATIN-AY', showFarmers: false, farmers: [] },
   { name: 'LUCENA', showFarmers: false, farmers: [] },
-  { name: 'MAUG',   showFarmers: false, farmers: [] },
+  { name: 'MAUG', showFarmers: false, farmers: [] },
 ])
 
 // 2. Form state
 const newFarmer = ref({
-  name: '', specialty: '', experience: '', contact: '', barangay: ''
+  name: '',
+  specialty: '',
+  experience: '',
+  contact: '',
+  barangay: '',
 })
 function goToFarmerProfile(id) {
   router.push(`/profile/${id}`)
@@ -154,26 +155,29 @@ function goToFarmerProfile(id) {
 
 // 3. Load from Supabase on mount
 onMounted(async () => {
-  await fetchFarmers()      // populates farmers.value
+  await fetchFarmers() // populates farmers.value
   syncFarmersToUI()
 })
 
 // 4. Whenever you fetch or add, sync into each barangay
 function syncFarmersToUI() {
   // clear existing lists
-  barangays.value.forEach(b => (b.farmers = []))
+  barangays.value.forEach((b) => (b.farmers = []))
 
   // group from backend
-  farmers.value.forEach(f => {
-    const b = barangays.value.find(x => x.name === f.barangay)
+  farmers.value.forEach((f) => {
+    const b = barangays.value.find((x) => x.name === f.barangay)
     if (b) b.farmers.push(f)
   })
 }
 
 // 5. Toggle, navigation helpers…
-function toggleFarmers(i)     { barangays.value[i].showFarmers = !barangays.value[i].showFarmers }
-function goTo(path)           { router.push(path) }
-function goToFarmerProfile(id){ router.push(`/profile/${id}`) }
+function toggleFarmers(i) {
+  barangays.value[i].showFarmers = !barangays.value[i].showFarmers
+}
+function goTo(path) {
+  router.push(path)
+}
 
 // 6. Add farmer handler
 import { addFarmerToSupabase } from '@/stores/farmers.js'
