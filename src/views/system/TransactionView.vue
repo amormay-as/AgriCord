@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/supabase.js'
 import { useTransactionStore } from '@/stores/transaction'
@@ -23,6 +23,15 @@ const newTransaction = ref({
   quantity: null,
 })
 
+const supplies = ref([
+  { name: 'Urea Fertilizer', quantity: '100 bags', category: 'Fertilizer' },
+  { name: 'Hybrid Rice Seeds', quantity: '200 bags', category: 'Fertilizer' },
+  { name: 'Ammonium Sulfate', quantity: '150 bags', category: 'Seed' },
+  { name: 'Corn Seeds', quantity: '300 bags', category: 'Seed' },
+  { name: 'Complete Fertilizer', quantity: '120 bags', category: 'Pesticide' },
+  { name: 'Insecticide', quantity: '80 liters', category: 'Pesticide' },
+])
+
 function applyTransactions() {
   for (const tx of transactionStore.transactions) {
     const supply = supplies.value.find((s) => s.name === tx.supply)
@@ -37,15 +46,6 @@ function applyTransactions() {
   }
 }
 
-const supplies = ref([
-  { name: 'Urea Fertilizer', quantity: '100 bags', category: 'Fertilizer' },
-  { name: 'Hybrid Rice Seeds', quantity: '200 bags', category: 'Fertilizer' },
-  { name: 'Ammonium Sulfate', quantity: '150 bags', category: 'Seed' },
-  { name: 'Corn Seeds', quantity: '300 bags', category: 'Seed' },
-  { name: 'Complete Fertilizer', quantity: '120 bags', category: 'Pesticide' },
-  { name: 'Insecticide', quantity: '80 liters', category: 'Pesticide' },
-])
-
 async function addTransaction() {
   if (
     newTransaction.value.farmer &&
@@ -54,11 +54,26 @@ async function addTransaction() {
     newTransaction.value.quantity
   ) {
     try {
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser()
+
+      if (authError || !user) {
+        console.error('Authentication error:', authError)
+        return
+      }
+
       await transactionStore.addTransaction({
-        ...newTransaction.value,
+        farmer: newTransaction.value.farmer,
+        supply: newTransaction.value.supply,
+        date: newTransaction.value.date,
         quantity: Number(newTransaction.value.quantity),
+        user_id: user.id,
       })
+
       applyTransactions()
+
       newTransaction.value = {
         farmer: '',
         supply: '',
@@ -66,12 +81,23 @@ async function addTransaction() {
         quantity: null,
       }
     } catch (err) {
-      console.error('Transaction not saved to Supabase:', err)
+      // 🔍 More informative logging
+      console.error('Transaction not saved to Supabase:')
+      if (err instanceof Error) {
+        console.error(err.message)
+      } else if (typeof err === 'object') {
+        console.error(JSON.stringify(err, null, 2))
+      } else {
+        console.error(err)
+      }
     }
   }
 }
 
-transactionStore.fetchTransactions().then(applyTransactions)
+onMounted(async () => {
+  await transactionStore.fetchTransactions()
+  applyTransactions()
+})
 
 function goTo(path) {
   router.push(path)
