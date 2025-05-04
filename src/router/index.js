@@ -22,11 +22,7 @@ const router = createRouter({
       redirect: '/login',
     },
     {
-      path: '/',
-      redirect: '/login',
-    },
-    {
-      path: '/',
+      path: '/login',
       name: 'login',
       component: LoginView,
     },
