@@ -124,7 +124,7 @@ onMounted(() => {
             <!-- welcome  -->
             <v-col cols="12">
               <v-card class="mt-3 pa-6 head" elevation="1">
-                <h2 class="font-weight-bol">Welcome to AgriCord!</h2>
+                <h3 class="font-weight-bol">Welcome to AgriCord!</h3>
                 <br />
                 <p>
                   Track and manage your farm supplies, monitor usage, and keep your records
