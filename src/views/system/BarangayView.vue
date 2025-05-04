@@ -125,65 +125,73 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { supabase } from '@/supabase.js'
+import { ref, onMounted } from 'vue'
+import { useRouter }        from 'vue-router'
+
+import {
+  fetchFarmers,
+  farmers
+} from '@/stores/farmers.js'
 
 const router = useRouter()
 
-const logout = async () => {
-  await supabase.auth.signOut()
-  router.push('/login')
-}
-
+// 1. Define your static barangays (no initial farmers)
 const barangays = ref([
-  {
-    name: 'AWA',
-    showFarmers: false,
-    farmers: [{ id: 'antonio-dela-crad', name: 'Antonio Dela Crad' }],
-  },
-  { name: 'AZPETIA', showFarmers: false, farmers: [{ id: 'maria', name: 'Maria Santos' }] },
-  { name: 'PATIN-AY', showFarmers: false, farmers: [{ id: 'john-reyes', name: 'John Reyes' }] },
-  { name: 'LUCENA', showFarmers: false, farmers: [{ id: 'etena-moreno', name: 'Etena Moreno' }] },
-  { name: 'MAUG', showFarmers: false, farmers: [{ id: 'jose-tan', name: 'Jose Tan' }] },
+  { name: 'AWA',    showFarmers: false, farmers: [] },
+  { name: 'AZPETIA',showFarmers: false, farmers: [] },
+  { name: 'PATIN-AY',showFarmers: false, farmers: [] },
+  { name: 'LUCENA', showFarmers: false, farmers: [] },
+  { name: 'MAUG',   showFarmers: false, farmers: [] },
 ])
 
+// 2. Form state
 const newFarmer = ref({
-  name: '',
-  specialty: '',
-  experience: '',
-  contact: '',
-  barangay: '',
+  name: '', specialty: '', experience: '', contact: '', barangay: ''
 })
-
-function toggleFarmers(index) {
-  barangays.value[index].showFarmers = !barangays.value[index].showFarmers
-}
-
 function goToFarmerProfile(id) {
   router.push(`/profile/${id}`)
 }
 
-function goTo(path) {
-  router.push(path)
+// 3. Load from Supabase on mount
+onMounted(async () => {
+  await fetchFarmers()      // populates farmers.value
+  syncFarmersToUI()
+})
+
+// 4. Whenever you fetch or add, sync into each barangay
+function syncFarmersToUI() {
+  // clear existing lists
+  barangays.value.forEach(b => (b.farmers = []))
+
+  // group from backend
+  farmers.value.forEach(f => {
+    const b = barangays.value.find(x => x.name === f.barangay)
+    if (b) b.farmers.push(f)
+  })
 }
 
-function addFarmer() {
-  const farmer = newFarmer.value
-  if (farmer.name && farmer.specialty && farmer.experience && farmer.contact && farmer.barangay) {
-    const id = farmer.name.toLowerCase().replace(/\s+/g, '-')
-    const barangay = barangays.value.find((b) => b.name === farmer.barangay)
-    if (barangay) {
-      barangay.farmers.push({
-        id,
-        name: farmer.name,
-        specialty: farmer.specialty,
-        experience: farmer.experience,
-        contact: farmer.contact,
-      })
-      newFarmer.value = { name: '', specialty: '', experience: '', contact: '', barangay: '' }
-    }
-  }
+// 5. Toggle, navigation helpers…
+function toggleFarmers(i)     { barangays.value[i].showFarmers = !barangays.value[i].showFarmers }
+function goTo(path)           { router.push(path) }
+function goToFarmerProfile(id){ router.push(`/profile/${id}`) }
+
+// 6. Add farmer handler
+import { addFarmerToSupabase } from '@/stores/farmers.js'
+
+async function addFarmer() {
+  const f = newFarmer.value
+  if (!f.name || !f.specialty || !f.experience || !f.contact || !f.barangay) return
+
+  // send to Supabase
+  const inserted = await addFarmerToSupabase(f)
+  if (!inserted) return
+
+  // refresh local store + UI
+  await fetchFarmers()
+  syncFarmersToUI()
+
+  // reset form
+  newFarmer.value = { name: '', specialty: '', experience: '', contact: '', barangay: '' }
 }
 </script>
 
