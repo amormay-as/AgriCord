@@ -12,10 +12,6 @@ const logout = async () => {
   router.push('/login')
 }
 
-const editDialog = ref(false)
-const editedIndex = ref(null)
-const editedQuantity = ref('')
-
 const newTransaction = ref({
   farmer: '',
   supply: '',
